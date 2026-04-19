@@ -1,9 +1,101 @@
 fileFormatVersion: 2
 guid: 1ba55bb08bce76247944fccb8029d69c
+AssetOrigin:
+  serializedVersion: 1
+  productId: 297168
+  packageName: Rolling Balls Sci-fi Pack Free
+  packageVersion: 1.0
+  assetPath: Assets/Rolling_Balls-Sci-fi_Pack/Rolling_Balls-Sci-fi_Pack_SRP_Build/Model/RollingBalls_Sci-fi_4.fbx
+  uploadId: 695281
 ModelImporter:
-  serializedVersion: 22200
+  serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material
+    second: {fileID: 2100000, guid: f9fbefd9b805a9c468487c90555eaf4a, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_1
+    second: {fileID: 2100000, guid: 677bd5e07430b2749aef8a6ade285e54, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_10
+    second: {fileID: 2100000, guid: f303b16463bfcc04fb783115650bfdf2, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_11
+    second: {fileID: 2100000, guid: 5f989751f0b4e004fb77685a9fda9862, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_12
+    second: {fileID: 2100000, guid: 7f065a3adb3c58342856e3382ddbaa32, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_13
+    second: {fileID: 2100000, guid: aac84e8bc13635141a57ce5dfd6e995d, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_14
+    second: {fileID: 2100000, guid: a2867ea36a7b7b743882732be69edf9b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_15
+    second: {fileID: 2100000, guid: cd6adfa4ea364d943bf3491b9f896dc9, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_16
+    second: {fileID: 2100000, guid: 3690b619ef1fc4343acc6ba1a0225e89, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_2
+    second: {fileID: 2100000, guid: b1bedd07591fe4d489f648e634b6c45c, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_3
+    second: {fileID: 2100000, guid: d943cf05979588d4e9fb58a6ce93b12b, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_4
+    second: {fileID: 2100000, guid: efc03ee2fbf60494c89c99c19ec4b5a0, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_5
+    second: {fileID: 2100000, guid: 223e0646c530b004daa603524fb11596, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_6
+    second: {fileID: 2100000, guid: 1e4514d7a504365448aab94ca2a6dbff, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_7
+    second: {fileID: 2100000, guid: 0a53dad7091a410418ecd0b704f232cb, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_8
+    second: {fileID: 2100000, guid: 434f35563407cff4fbffeb94bd838671, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: New_Material_9
+    second: {fileID: 2100000, guid: 0dd5155111536384295345d84967d7d1, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
@@ -16,8 +108,6 @@ ModelImporter:
     optimizeGameObjects: 0
     removeConstantScaleCurves: 0
     motionNodeName: 
-    rigImportErrors: 
-    rigImportWarnings: 
     animationImportErrors: 
     animationImportWarnings: 
     animationRetargetingWarnings: 
@@ -58,6 +148,9 @@ ModelImporter:
     maxBonesPerVertex: 4
     minBoneWeight: 0.001
     optimizeBones: 1
+    generateMeshLods: 0
+    meshLodGenerationFlags: 0
+    maximumMeshLod: -1
     meshOptimizationFlags: -1
     indexFormat: 0
     secondaryUVAngleDistortion: 8
@@ -107,10 +200,3 @@ ModelImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 297168
-  packageName: Rolling Balls Sci-fi Pack Free
-  packageVersion: 1.0
-  assetPath: Assets/Rolling_Balls-Sci-fi_Pack/Rolling_Balls-Sci-fi_Pack_SRP_Build/Model/RollingBalls_Sci-fi_4.fbx
-  uploadId: 695281
