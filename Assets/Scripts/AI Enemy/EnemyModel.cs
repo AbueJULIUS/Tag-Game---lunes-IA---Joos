@@ -3,7 +3,7 @@ using static UnityEngine.GraphicsBuffer;
 
 public class EnemyModel : MonoBehaviour, ITagable
 {
-    private bool tagged;
+    [SerializeField] private bool tagged;
     public bool Tagged => tagged;
     [SerializeField] private float speed;
     private float rotVelocity = 15;

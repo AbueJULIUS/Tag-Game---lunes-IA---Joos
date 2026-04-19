@@ -7,6 +7,7 @@ public class PlayerModel : MonoBehaviour, ITagable
     private Rigidbody rb;
     private CapsuleCollider coll;
     private PlayerInput playerInput;
+    private PlayerView playerView;
     //private HealthController healthController;
 
     Vector2 moveInput;
@@ -42,8 +43,9 @@ public class PlayerModel : MonoBehaviour, ITagable
     float xRotation = 0f;
     float yRotation = 0f;
 
-    //private FSMEffectClass fsmEffectClass;
-    //public FSMEffectClass Fsm => fsmEffectClass;
+    [Header("MapBounds")]
+    [SerializeField] private Transform mapCenter;
+    private float mapRadius;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Awake()
@@ -53,6 +55,9 @@ public class PlayerModel : MonoBehaviour, ITagable
         rb = GetComponent<Rigidbody>();
         playerInput = GetComponent<PlayerInput>();
         coll = GetComponent<CapsuleCollider>();
+        playerView = GetComponent<PlayerView>();
+        SphereCollider sphere = mapCenter.GetComponent<SphereCollider>();
+        mapRadius = sphere.radius * mapCenter.lossyScale.x;
     }
 
     private void Start()
@@ -82,6 +87,7 @@ public class PlayerModel : MonoBehaviour, ITagable
     private void LateUpdate()
     {
         HandleCameraCollision();
+        LimitMovement();
     }
     void FixedUpdate()
     {
@@ -100,9 +106,22 @@ public class PlayerModel : MonoBehaviour, ITagable
 
         Vector3 direction = forward * moveInput.y + right * moveInput.x;
 
-        rb.AddForce(direction * currentSpeed, ForceMode.Acceleration);
+        Vector3 velocity = rb.linearVelocity;
+        Vector3 horizontalVelocity = direction * currentSpeed;
+        rb.linearVelocity = new Vector3(horizontalVelocity.x, velocity.y, horizontalVelocity.z);
 
         Rotate(direction);
+    }
+    void LimitMovement()
+    {
+         
+        Vector3 offset = transform.position - mapCenter.position;
+
+        if (offset.magnitude > mapRadius)
+        {
+            transform.position = mapCenter.position + offset.normalized * mapRadius;
+        }
+    
     }
     void Rotate(Vector3 dir)
     {
@@ -174,6 +193,8 @@ public class PlayerModel : MonoBehaviour, ITagable
                 Vector3 jumpDir = (Vector3.up - transform.forward * offWallJumpForce).normalized;
                 rb.AddForce(jumpDir * jumpForce, ForceMode.Impulse);
             }
+            
+            playerView.Jump();
         }
     }
 
