@@ -52,10 +52,13 @@ Material:
     m_Ints: []
     m_Floats:
     - _Distance: 7
+    - _HorizontalSpeed: 0.1
     - _QueueControl: 0
     - _QueueOffset: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Color_1: {r: 0, g: 0.08340796, b: 0.9811321, a: 0}
+    - _Color_1: {r: 0, g: 0.08340793, b: 0.9811321, a: 1}
+    - _Color_2: {r: 0.5613207, g: 0.6527887, b: 1, a: 1}
+    - _Color_Outer: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
