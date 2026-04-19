@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
+    public static GameManager Instance;
     [Header("Timer")]
     [SerializeField] private float gameTime = 180f; //3 mins
     private float currentTime;
@@ -18,6 +19,10 @@ public class GameManager : MonoBehaviour
     [Header("Players")]
     List<ITagable> tagables = new List<ITagable>();
 
+    private void Awake()
+    {
+        Instance = this;
+    }
     void Start()
     {
         currentTime = gameTime;
@@ -58,7 +63,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void FinishGame()
+    public void FinishGame()
     {
         gameFinished = true;
         Time.timeScale = 0;
@@ -81,7 +86,15 @@ public class GameManager : MonoBehaviour
 
             if (mb != null)
             {
-                defeatText.text = "El perdedor es: " + mb.gameObject.name;
+                if(currentTime <= 0)
+                {
+                    defeatText.text = mb.gameObject.name + " gano";
+                }
+                else
+                {
+                    defeatText.text = mb.gameObject.name + " no aguanto el tiempo";
+                }
+                
             }
         }
     }

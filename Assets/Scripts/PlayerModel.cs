@@ -202,9 +202,13 @@ public class PlayerModel : MonoBehaviour, ITagable
     {
         tagged = state;
     }
-    //public void OnPause()
-    //{
-    //    PauseMenuManager.Instance.TogglePause();
-    //}
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Tagable"))
+        {
+            GameManager.Instance.FinishGame();
+        }
+    }
 
 }

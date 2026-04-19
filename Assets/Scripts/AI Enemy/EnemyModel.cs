@@ -19,6 +19,9 @@ public class EnemyModel : MonoBehaviour, ITagable
     private bool canSeePlayer;
 
     FSMClasses fsm;
+    [Header("MapBounds")]
+    private Transform mapCenter;
+    private float mapRadius;
     private void Awake()
     {
         los = GetComponent<LineOfSight>();
@@ -30,6 +33,9 @@ public class EnemyModel : MonoBehaviour, ITagable
     {
         player = FindAnyObjectByType<PlayerModel>().transform;
         rb = GetComponent<Rigidbody>();
+        mapCenter = GameObject.FindGameObjectWithTag("Border").transform;
+        SphereCollider sphere = mapCenter.GetComponent<SphereCollider>();
+        mapRadius = sphere.radius * mapCenter.lossyScale.x;
     }
 
     // Update is called once per frame
@@ -43,10 +49,15 @@ public class EnemyModel : MonoBehaviour, ITagable
         fsm.UpdateState(canSeePlayer);
                 
     }
-    
+    private void LateUpdate()
+    {
+        LimitMovement();
+    }
     public void Move(Vector3 dir)
     {
-        rb.AddForce(dir * speed, ForceMode.Force);
+        Vector3 velocity = rb.linearVelocity;
+        Vector3 horizontalVelocity = dir * speed;
+        rb.linearVelocity = new Vector3(horizontalVelocity.x, velocity.y, horizontalVelocity.z);
         Rotate(dir);
     }
     void Rotate(Vector3 dir)
@@ -55,6 +66,17 @@ public class EnemyModel : MonoBehaviour, ITagable
         {
             transform.forward = Vector3.Lerp(transform.forward, dir, rotVelocity * Time.deltaTime);
         }
+    }
+    void LimitMovement()
+    {
+
+        Vector3 offset = transform.position - mapCenter.position;
+
+        if (offset.magnitude > mapRadius)
+        {
+            transform.position = mapCenter.position + offset.normalized * mapRadius;
+        }
+
     }
     public void ToggleTagged(bool state)
     {
