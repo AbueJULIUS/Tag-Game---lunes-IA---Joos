@@ -40,10 +40,10 @@ public class EnemyManager : MonoBehaviour
     {
         GameObject enemy = pool.Get();
 
-        Vector3 randomPos = Random.insideUnitSphere * spawnRadius;
-        randomPos.y = 0;
+        Vector2 circle = Random.insideUnitCircle * spawnRadius;
 
-        Vector3 spawnPos = transform.position + randomPos + Vector3.up * spawnHeight;
+        Vector3 spawnPos = mapCenter.position +
+                           new Vector3(circle.x, spawnHeight, circle.y);
 
         enemy.transform.position = spawnPos;
         enemy.transform.rotation = Quaternion.identity;

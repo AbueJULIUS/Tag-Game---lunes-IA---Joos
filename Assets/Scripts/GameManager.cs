@@ -66,37 +66,27 @@ public class GameManager : MonoBehaviour
     public void FinishGame()
     {
         gameFinished = true;
-        Time.timeScale = 0;
-        defeatScreen.SetActive(true);
+        //Time.timeScale = 0;
+        //defeatScreen.SetActive(true);
         CheckTagged();
     }
     void CheckTagged()
     {
-        ITagable lastTagged = null;
-        foreach (var tagable in tagables)
-        {
-            if (tagable.Tagged)
-            {
-                lastTagged = tagable;
-            }
-        }
-        if (lastTagged != null)
-        {
-            MonoBehaviour mb = lastTagged as MonoBehaviour;
-
-            if (mb != null)
-            {
+     
+            
                 if(currentTime <= 0)
                 {
-                    defeatText.text = mb.gameObject.name + " gano";
+                    defeatText.text = "gano";
+                    SceneManager.LoadScene("VictoryScreen");
                 }
                 else
                 {
-                    defeatText.text = mb.gameObject.name + " no aguanto el tiempo";
+                    defeatText.text = "no aguanto el tiempo";
+                    SceneManager.LoadScene("DefeatScreen");
                 }
                 
-            }
-        }
+            
+        
     }
     public void Replay()
     {
