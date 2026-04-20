@@ -9,6 +9,7 @@ public class EnemyManager : MonoBehaviour
     private float spawnHeight = 20f;
     private float spawnRadius = 15f;
     [SerializeField] private float spawnInterval = 2f;
+    [SerializeField] private int initialEnemies = 40;
 
     private float timer;
 
@@ -18,6 +19,11 @@ public class EnemyManager : MonoBehaviour
         SphereCollider sphere = mapCenter.GetComponent<SphereCollider>();
         spawnRadius = sphere.radius * mapCenter.lossyScale.x;
         spawnHeight = sphere.radius * mapCenter.lossyScale.y;
+
+        for (int i = 0; i <= initialEnemies; i++)
+        {
+            SpawnEnemy();
+        }
     }
     void Update()
     {

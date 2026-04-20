@@ -4,7 +4,7 @@ using UnityEngine;
 public class EnemyPool : MonoBehaviour
 {
     [SerializeField] private List<GameObject> enemyPrefab;
-    private int poolSize = 20;
+    private int poolSize = 100;
 
     private Queue<GameObject> pool = new();
 

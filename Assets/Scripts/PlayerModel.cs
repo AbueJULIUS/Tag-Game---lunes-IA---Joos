@@ -25,6 +25,7 @@ public class PlayerModel : MonoBehaviour, ITagable
     public bool Tagged => tagged;
 
     private float rotVelocity = 10;
+    [SerializeField] private LayerMask groundMask;
     [Header("Wallclimbing Parametres")]
     [SerializeField] float offWallJumpForce = 0.4f;
     [SerializeField] float wallCheckDistance = 0.5f;
@@ -165,7 +166,8 @@ public class PlayerModel : MonoBehaviour, ITagable
     {
         //hacer esfera debajo del jugador (no raycast por si se cae un poquito)
         Vector3 bottom = transform.position + coll.center - Vector3.up * (coll.height / 2 + groundCheckRadius + 0.02f);
-        return Physics.CheckSphere(bottom, 0.3f);
+        LayerMask combinedMask = groundMask | wallMask;
+        return Physics.CheckSphere(bottom, 0.3f, combinedMask);
     }
     bool IsTouchingWall()
     {
@@ -183,19 +185,40 @@ public class PlayerModel : MonoBehaviour, ITagable
     {
         if (callbackContext.performed) //para q no se ejecute 3 veces - started y canceled
         {
-            if (IsGrounded())
+            if (IsTouchingWall() && !IsGrounded())
+            {
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+
+                if (TryGetWallNormal(out Vector3 wallNormal))
+                {
+                    Vector3 jumpDir = (Vector3.up + wallNormal).normalized;
+                    rb.AddForce(jumpDir * offWallJumpForce, ForceMode.Impulse);
+                    playerView.Jump();
+                }
+
+                Debug.Log("wall jump");
+            }
+            else if (IsGrounded())
             {
                 rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
-            }
-            else if (IsTouchingWall())
-            {
-                rb.linearVelocity = Vector3.zero;
-                Vector3 jumpDir = (Vector3.up - transform.forward * offWallJumpForce).normalized;
-                rb.AddForce(jumpDir * jumpForce, ForceMode.Impulse);
-            }
-            
-            playerView.Jump();
+                Debug.Log("grounded jump");
+                playerView.Jump();
+            }            
+
         }
+    }
+    bool TryGetWallNormal(out Vector3 normal)
+    {
+        RaycastHit hit;
+
+        if (Physics.Raycast(transform.position, transform.forward, out hit, wallCheckDistance, wallMask))
+        {
+            normal = hit.normal;
+            return true;
+        }
+
+        normal = Vector3.zero;
+        return false;
     }
 
     public void ToggleTagged(bool state)
