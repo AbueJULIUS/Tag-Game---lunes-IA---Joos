@@ -2,19 +2,6 @@ using UnityEngine;
 
 public class EnemyModel : EnemyBase
 {
-
-    protected override void Awake()
-    {
-        base.Awake();
-
-        fsm = GetComponent<FSMClasses>();
-    }   
-
-    private void LateUpdate()
-    {
-        LimitMovement();
-    }
-
     public override void Move(Vector3 dir)
     {
         Vector3 velocity = rb.linearVelocity;
@@ -36,18 +23,6 @@ public class EnemyModel : EnemyBase
                 transform.forward,
                 dir,
                 rotVelocity * Time.deltaTime);
-        }
-    }
-
-    private void LimitMovement()
-    {
-        Vector3 offset = transform.position - mapCenter.position;
-
-        if (offset.magnitude > mapRadius)
-        {
-            transform.position =
-                mapCenter.position +
-                offset.normalized * mapRadius;
         }
     }
 }

@@ -87,8 +87,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FlyingEnemyModel
   speed: 7
-  rotVelocity: 15
-  wanderTimer: 1
+  rotVelocity: 4
+  wanderTimer: 5
   height: 72
 --- !u!54 &4027557119807034194
 Rigidbody:

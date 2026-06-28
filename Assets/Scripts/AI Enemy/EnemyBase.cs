@@ -37,6 +37,7 @@ public abstract class EnemyBase : MonoBehaviour, ITagable
     {
         rb = GetComponent<Rigidbody>();
         los = GetComponent<LineOfSight>();
+        fsm = GetComponent<FSMClasses>();
     }
     public abstract void Move(Vector3 dir);
 
@@ -49,7 +50,28 @@ public abstract class EnemyBase : MonoBehaviour, ITagable
 
         fsm.UpdateState(canSeePlayer);
     }
+    protected virtual void LateUpdate()
+    {
+        LimitMovement();
+    }
+    protected void LimitMovement()
+    {
+        Vector3 offset = transform.position - mapCenter.position;
 
+        //solo limite en XZ
+        offset.y = 0;
+
+        if (offset.magnitude > mapRadius)
+        {
+            Vector3 clampedPos = mapCenter.position + offset.normalized * mapRadius;
+
+            transform.position = new Vector3(
+                clampedPos.x,
+                transform.position.y,
+                clampedPos.z
+            );
+        }
+    }
     public virtual void ToggleTagged(bool state)
     {
         tagged = state;
