@@ -12090,7 +12090,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 7078936108825992654, guid: 389d0d615a68f58449fc49593023afa0, type: 3}
+  - {fileID: -5921788124644499585, guid: e93ca54f77d6c8046821beedbd30c5ec, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -14804,8 +14804,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   mapCenter: {fileID: 980039856}
+  player: {fileID: 0}
   spawnInterval: 1.5
   initialEnemies: 40
+  flyingEnemyPrefab: {fileID: 2849579493371645373, guid: d4034464eca01cc4d9e9aace180c9008, type: 3}
+  initialFlyingEnemies: 4
+  flyingHeight: 72
 --- !u!4 &1487788157
 Transform:
   m_ObjectHideFlags: 0
