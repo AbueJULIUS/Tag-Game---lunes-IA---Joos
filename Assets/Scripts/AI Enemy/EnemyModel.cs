@@ -1,7 +1,9 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyModel : EnemyBase
 {
+
     public override void Move(Vector3 dir)
     {
         Vector3 velocity = rb.linearVelocity;

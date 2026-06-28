@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class EnemyBase : MonoBehaviour, ITagable
@@ -23,7 +24,75 @@ public abstract class EnemyBase : MonoBehaviour, ITagable
     [SerializeField]
     protected float wanderTimer = 1f;
     public float WanderTimer => wanderTimer;
+    public List<Node> currentPath;
+    public int pathIndex;
 
+    public MapPoints Map;
+    public Node CurrentNode;
+    public Node TargetNode;
+
+    public void FollowPath()
+    {
+        if (currentPath == null || currentPath.Count == 0)
+            return;
+
+        if (pathIndex >= currentPath.Count)
+            return;
+
+        Node target = currentPath[pathIndex];
+
+        Vector3 dir = (target.transform.position - transform.position);
+        dir.y = 0;
+        dir.Normalize();
+
+        Move(dir);
+
+        if (Vector3.Distance(transform.position, target.transform.position) < 0.5f)
+        {
+            pathIndex++;
+        }
+    }
+    public void RequestPath(Node target)
+    {
+
+        CurrentNode = FindClosestNode(transform.position);
+        TargetNode = target;
+
+        currentPath = ThetaStar.Run(
+            CurrentNode,
+            (n) => n == TargetNode,
+            (n) => n.neighbours,
+            (a, b) => Vector3.Distance(a.transform.position, b.transform.position),
+            (n) => Vector3.Distance(n.transform.position, TargetNode.transform.position),
+            (a, b) => Map.HasLineOfSight(a, b)
+        );
+
+        pathIndex = 0;
+        Debug.Log($"Path generated: {(currentPath == null ? "NULL" : currentPath.Count.ToString())}");
+        if (CurrentNode == null || TargetNode == null)
+        {
+            Debug.LogWarning("Nodes null");
+            return;
+        }
+    }
+    public Node FindClosestNode(Vector3 pos)
+    {
+        Node best = null;
+        float bestDist = float.MaxValue;
+
+        foreach (var n in Map.AllNodes)
+        {
+            float d = (n.transform.position - pos).sqrMagnitude;
+
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = n;
+            }
+        }
+
+        return best;
+    }
     public virtual void Initialize(Transform player, Transform mapCenter, EnemyManager manager)
     {
         this.player = player;

@@ -2,12 +2,15 @@ using UnityEngine;
 
 public class EnemyManager : MonoBehaviour
 {
+    public static EnemyManager Instance;
     private EnemyPool pool;
 
     public Vector3? LastKnownPlayerPos { get; private set; }
 
     [Header("References")]
     [SerializeField] private Transform mapCenter;
+    private MapPoints map;
+    public MapPoints Map => map;
     [SerializeField] private PlayerModel player;
 
     [Header("Spawn")]
@@ -25,7 +28,15 @@ public class EnemyManager : MonoBehaviour
 
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
         pool = GetComponent<EnemyPool>();
+        map = FindAnyObjectByType<MapPoints>();
     }
 
     private void Start()

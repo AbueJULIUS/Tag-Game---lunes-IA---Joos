@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class FSMClasses : MonoBehaviour
@@ -15,10 +16,24 @@ public class FSMClasses : MonoBehaviour
         pursue = new PursueState(this);
         flee = new FleeState(this);
         investigate = new InvestigateState(this);
+    }
+    void Start()
+    {
+        StartCoroutine(WaitForMap());
+    }
 
+    IEnumerator WaitForMap()
+    {
+        while (!EnemyManager.Instance.Map.IsReady)
+            yield return null;
+
+        InitializeFSM();
+    }
+    void InitializeFSM()
+    {
         current = patrol;
         current.Enter();
-    } 
+    }
     private void ChangeState(State newState)
     {
         if(current != newState)
@@ -65,14 +80,21 @@ public abstract class State
 }
 public class PatrolState : State
 {
-
+    Node randomNode;
     float intervalTimer;
     Vector3 wanderDir;
     public PatrolState(FSMClasses fsm) : base(fsm) { }
+    void PickNewTarget()
+    {
+        randomNode = model.Manager.Map.AllNodes[
+            Random.Range(0, model.Manager.Map.AllNodes.Count)
+        ];
+
+        model.RequestPath(randomNode);
+    }
     public override void Enter() 
     {
-        intervalTimer = model.WanderTimer;
-        wanderDir = fsm.transform.forward;
+        PickNewTarget();
     }
     public override void Exit() { }
     public override void Update(bool canSeePlayer)
@@ -87,16 +109,13 @@ public class PatrolState : State
             fsm.ChangeToInvestigate();
             return;
         }
+        model.FollowPath();
 
-        intervalTimer -= Time.deltaTime;
-
-        if (intervalTimer <= 0)
+        if (model.currentPath == null || model.pathIndex >= model.currentPath.Count)
         {
-            wanderDir = SteeringBehaviours.Wander(wanderDir, 180);
-            intervalTimer = model.WanderTimer;
+            PickNewTarget(); // nuevo destino random
         }
 
-        model.Move(wanderDir);
     }
 }
 public class PursueState : State
@@ -129,13 +148,10 @@ public class PursueState : State
             return;
         }
 
-        Vector3 dir = SteeringBehaviours.Pursue(
-            fsm.transform,
-            target,
-            rb,
-            5);
+        Node playerNode = model.FindClosestNode(model.PlayerTransform.position);
 
-        model.Move(dir);
+        model.RequestPath(playerNode);
+        model.FollowPath();
     }
 }
 public class FleeState : State
@@ -197,17 +213,12 @@ public class InvestigateState : State
             return;
         }
 
-        Vector3 target = manager.LastKnownPlayerPos.Value;
+        Node targetNode = model.FindClosestNode(manager.LastKnownPlayerPos.Value);
 
-        Vector3 dir = SteeringBehaviours.Arrive(
-            fsm.transform,
-            target,
-            2f);
+        model.RequestPath(targetNode);
+        model.FollowPath();
 
-        model.Move(dir);
-
-        //llega al lugar
-        if (Vector3.Distance(fsm.transform.position, target) < 1f)
+        if (Vector3.Distance(model.transform.position, targetNode.transform.position) < 1f)
         {
             manager.ClearPlayerPosition();
             fsm.ChangeToPatrol();
