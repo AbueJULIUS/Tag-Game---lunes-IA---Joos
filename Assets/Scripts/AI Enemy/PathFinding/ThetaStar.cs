@@ -39,7 +39,6 @@ public class ThetaStar : MonoBehaviour
 
             visited.Add(node);
 
-            Debug.Log("ThetaStar");
 
             if (isSatisfied(node))
             {

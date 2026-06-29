@@ -14,6 +14,7 @@ public class MapPoints : MonoBehaviour
     [SerializeField] private Vector2Int gridSize = new Vector2Int(50, 50);
     [SerializeField] private float spacing = 4f;
     [SerializeField] private float sampleHeight = 100f;
+    [SerializeField] private float nodeHeightOffset = 0.3f;
 
     [Header("Bounds")]
     private float radius;
@@ -42,6 +43,18 @@ public class MapPoints : MonoBehaviour
 
         GenerateGrid();
         BuildConnections();
+        RemoveNodeColliders();
+        int total = 0;
+
+        foreach (Node n in allNodes)
+        {
+            total += n.neighbours.Count;
+        }
+
+        Debug.Log($"Nodos: {allNodes.Count}");
+        Debug.Log($"Conexiones: {total}");
+
+        IsReady = true;
     }
     void GenerateGrid()
     {
@@ -53,13 +66,11 @@ public class MapPoints : MonoBehaviour
         {
             for (int z = -gridSize.y; z <= gridSize.y; z++)
             {
-                Vector3 worldPos =
-    center +
-    new Vector3(x * spacing, sampleHeight, z * spacing);
+                Vector3 worldPos = center + new Vector3(x * spacing, sampleHeight, z * spacing);
 
                 if (Physics.Raycast(worldPos, Vector3.down, out RaycastHit hit, sampleHeight * 2f, walkableMask))
                 {
-                    Vector3 finalPos = hit.point;
+                    Vector3 finalPos = hit.point + hit.normal * nodeHeightOffset;
 
                     //FILTRO ESFERA DSPS DEL SNAP
                     if (Vector3.Distance(finalPos, center) > radius)
@@ -106,23 +117,15 @@ public class MapPoints : MonoBehaviour
             }
         }
     }
-
-    void TryConnect(Vector2Int p, Node a, Vector2Int dir)
+    void RemoveNodeColliders()
     {
-        Vector2Int n = p + dir;
-
-        if (grid.TryGetValue(n, out Node b))
+        foreach (Node node in allNodes)
         {
-            a.neighbours.Add(b);
+            Collider col = node.GetComponent<Collider>();
+
+            if (col != null)
+                Destroy(col); //col.enabled = false;
         }
-    }
-
-    bool IsInsideBounds(Vector3 point)
-    {
-        Vector2 p = new Vector2(point.x, point.z);
-        Vector2 c = new Vector2(mapCenter.position.x, mapCenter.position.z);
-
-        return (p - c).sqrMagnitude <= radius * radius;
     }
     public bool HasLineOfSight(Node a, Node b) 
     {

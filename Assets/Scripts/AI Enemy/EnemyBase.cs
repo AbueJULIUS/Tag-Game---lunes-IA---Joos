@@ -66,13 +66,10 @@ public abstract class EnemyBase : MonoBehaviour, ITagable
             (a, b) => EnemyManager.Instance.Map.HasLineOfSight(a, b)
         );
 
-        pathIndex = 0;
-        Debug.Log($"Path generated: {(currentPath == null ? "NULL" : currentPath.Count.ToString())}");
-        if (CurrentNode == null || TargetNode == null)
-        {
-            Debug.LogWarning("Nodes null");
-            return;
-        }
+        if (currentPath.Count > 1)
+            pathIndex = 1;
+        else
+            pathIndex = 0;
     }
     public virtual void Initialize(Transform player, Transform mapCenter, EnemyManager manager)
     {
