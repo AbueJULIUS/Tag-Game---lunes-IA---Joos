@@ -34,6 +34,48 @@ public class LineOfSight : MonoBehaviour
         Vector3 dir = target.position - self.position;
         return !Physics.Raycast(self.position, dir.normalized, dir.magnitude, wallMask);
     }
+    public bool TryGetVisibleEnemy(out EnemyBase enemy)//checkear si enemigo enfrente
+    {
+        enemy = null;
+
+        Vector3 origin = transform.position;
+        Vector3 baseDir = transform.TransformDirection(viewDirection).normalized;
+
+        Quaternion basis = Quaternion.LookRotation(baseDir);
+
+        int hSteps = 20;
+        int vSteps = 10;
+
+        float hStep = horizontalAngle / hSteps;
+        float vStep = verticalAngle / vSteps;
+
+        for (int i = 0; i <= hSteps; i++)
+        {
+            float hAngle = -horizontalAngle * 0.5f + hStep * i;
+
+            for (int j = 0; j <= vSteps; j++)
+            {
+                float vAngle = -verticalAngle * 0.5f + vStep * j;
+
+                Quaternion rot =
+                    basis *
+                    Quaternion.Euler(vAngle, hAngle, 0);
+
+                Vector3 dir = rot * Vector3.forward;
+
+                if (Physics.Raycast(origin, dir, out RaycastHit hit, distance))
+                {
+                    if (hit.collider.CompareTag("Tagable"))
+                    {
+                        enemy = hit.collider.GetComponent<EnemyBase>();
+                        return true;
+                    }
+                }
+            }
+        }
+
+        return false;
+    }
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;

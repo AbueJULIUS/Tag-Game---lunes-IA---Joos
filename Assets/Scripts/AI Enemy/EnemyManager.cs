@@ -9,6 +9,7 @@ public class EnemyManager : MonoBehaviour
 
     [Header("References")]
     [SerializeField] private Transform mapCenter;
+    public Transform MapCenter => mapCenter;
     private MapPoints map;
     public MapPoints Map => map;
     [SerializeField] private PlayerModel player;
