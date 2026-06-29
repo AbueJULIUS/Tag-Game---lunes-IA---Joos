@@ -6,7 +6,6 @@ public class Node : MonoBehaviour
 {
     public List<Node> neighbours = new List<Node>();
 
-    public int layer;
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.yellow;

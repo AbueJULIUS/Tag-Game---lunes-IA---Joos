@@ -8,7 +8,6 @@ public class PlayerModel : MonoBehaviour, ITagable
     private CapsuleCollider coll;
     private PlayerInput playerInput;
     private PlayerView playerView;
-    //private HealthController healthController;
 
     Vector2 moveInput;
     Vector2 aimInput;
@@ -191,7 +190,7 @@ public class PlayerModel : MonoBehaviour, ITagable
 
                 if (TryGetWallNormal(out Vector3 wallNormal))
                 {
-                    Vector3 jumpDir = (Vector3.up + wallNormal).normalized;
+                    Vector3 jumpDir = wallNormal.normalized;
                     rb.AddForce(jumpDir * offWallJumpForce, ForceMode.Impulse);
                     playerView.Jump();
                 }

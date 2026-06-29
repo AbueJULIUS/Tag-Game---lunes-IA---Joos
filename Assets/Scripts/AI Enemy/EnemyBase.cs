@@ -27,7 +27,6 @@ public abstract class EnemyBase : MonoBehaviour, ITagable
     public List<Node> currentPath;
     public int pathIndex;
 
-    public MapPoints Map;
     public Node CurrentNode;
     public Node TargetNode;
 
@@ -55,7 +54,7 @@ public abstract class EnemyBase : MonoBehaviour, ITagable
     public void RequestPath(Node target)
     {
 
-        CurrentNode = FindClosestNode(transform.position);
+        CurrentNode = EnemyManager.Instance.Map.GetClosestNode(transform.position);
         TargetNode = target;
 
         currentPath = ThetaStar.Run(
@@ -64,7 +63,7 @@ public abstract class EnemyBase : MonoBehaviour, ITagable
             (n) => n.neighbours,
             (a, b) => Vector3.Distance(a.transform.position, b.transform.position),
             (n) => Vector3.Distance(n.transform.position, TargetNode.transform.position),
-            (a, b) => Map.HasLineOfSight(a, b)
+            (a, b) => EnemyManager.Instance.Map.HasLineOfSight(a, b)
         );
 
         pathIndex = 0;
@@ -74,24 +73,6 @@ public abstract class EnemyBase : MonoBehaviour, ITagable
             Debug.LogWarning("Nodes null");
             return;
         }
-    }
-    public Node FindClosestNode(Vector3 pos)
-    {
-        Node best = null;
-        float bestDist = float.MaxValue;
-
-        foreach (var n in Map.AllNodes)
-        {
-            float d = (n.transform.position - pos).sqrMagnitude;
-
-            if (d < bestDist)
-            {
-                bestDist = d;
-                best = n;
-            }
-        }
-
-        return best;
     }
     public virtual void Initialize(Transform player, Transform mapCenter, EnemyManager manager)
     {

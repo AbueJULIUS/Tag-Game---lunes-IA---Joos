@@ -15,7 +15,7 @@ public class EnemyManager : MonoBehaviour
 
     [Header("Spawn")]
     [SerializeField] private float spawnInterval = 2f;
-    [SerializeField] private int initialEnemies = 40;
+    [SerializeField] private int initialEnemies = 20;
 
     [Header("Flying Enemies")]
     [SerializeField] private FlyingEnemyModel flyingEnemyPrefab;

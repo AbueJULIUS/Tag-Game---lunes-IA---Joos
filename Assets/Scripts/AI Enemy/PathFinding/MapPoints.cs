@@ -6,9 +6,13 @@ public class MapPoints : MonoBehaviour
     [Header("References")]
     [SerializeField] private Transform mapCenter;
     [SerializeField] private LayerMask walkableMask;
+    [SerializeField] private LayerMask nodeMask;
+    [SerializeField] private LayerMask obstacleMask;
 
     [Header("Grid Settings")]
-    [SerializeField] private float spacing = 2f;
+    [SerializeField] private GameObject nodePrefab;
+    [SerializeField] private Vector2Int gridSize = new Vector2Int(50, 50);
+    [SerializeField] private float spacing = 4f;
     [SerializeField] private float sampleHeight = 100f;
 
     [Header("Bounds")]
@@ -22,82 +26,84 @@ public class MapPoints : MonoBehaviour
 
     public bool IsReady { get; private set; }
 
-    private SphereCollider sphere;
+    private SphereCollider mapBorder;
+
+    public static MapPoints Instance;
 
     private void Awake()
     {
-        sphere = mapCenter.GetComponent<SphereCollider>();
+        Instance = this;
+        mapBorder = GetComponent<SphereCollider>();
     }
 
     private void Start()
     {
-        radius = sphere.radius * mapCenter.lossyScale.x;
+        radius = mapBorder.radius * mapBorder.transform.lossyScale.x;
 
         GenerateGrid();
         BuildConnections();
-
-        IsReady = true;
-
-        Debug.Log($"RADIUS: {radius}");
-        Debug.Log($"SIZE: {Mathf.CeilToInt((radius * 2f) / spacing)}");
-        Debug.Log($"Nodes generated: {allNodes.Count}");
     }
     void GenerateGrid()
     {
         allNodes.Clear();
-        grid.Clear();
 
         Vector3 center = mapCenter.position;
 
-        int size = Mathf.CeilToInt((radius * 2f) / spacing);
-
-        for (int x = -size; x <= size; x++)
+        for (int x = -gridSize.x; x <= gridSize.x; x++)
         {
-            for (int z = -size; z <= size; z++)
+            for (int z = -gridSize.y; z <= gridSize.y; z++)
             {
-                Vector3 worldPos = center + new Vector3(x * spacing, sampleHeight, z * spacing);
-
-                if (!IsInsideBounds(worldPos))
-                    continue;
+                Vector3 worldPos =
+    center +
+    new Vector3(x * spacing, sampleHeight, z * spacing);
 
                 if (Physics.Raycast(worldPos, Vector3.down, out RaycastHit hit, sampleHeight * 2f, walkableMask))
                 {
                     Vector3 finalPos = hit.point;
 
-                    Node node = CreateNode(finalPos);
+                    //FILTRO ESFERA DSPS DEL SNAP
+                    if (Vector3.Distance(finalPos, center) > radius)
+                        continue;
 
-                    Vector2Int key = new Vector2Int(x, z);
+                    if (((1 << hit.collider.gameObject.layer) & obstacleMask) != 0)
+                        continue;
 
-                    grid[key] = node;
+                    GameObject go = Instantiate(nodePrefab, finalPos, Quaternion.identity, transform);
+
+                    Node node = go.GetComponent<Node>();
+                    node.neighbours = new List<Node>();
+
                     allNodes.Add(node);
                 }
             }
         }
     }
-
-    Node CreateNode(Vector3 pos)
-    {
-        GameObject go = new GameObject($"Node_{pos.x}_{pos.y}_{pos.z}");
-        go.transform.position = pos;
-        go.transform.parent = transform;
-
-        Node node = go.AddComponent<Node>();
-
-        node.neighbours = new List<Node>();
-
-        return node;
-    }
     void BuildConnections()
     {
-        foreach (var kv in grid)
-        {
-            Vector2Int p = kv.Key;
-            Node a = kv.Value;
+        float connectionRadius = spacing * 1.1f;
 
-            TryConnect(p, a, Vector2Int.right);
-            TryConnect(p, a, Vector2Int.left);
-            TryConnect(p, a, Vector2Int.up);
-            TryConnect(p, a, Vector2Int.down);
+        foreach (Node node in allNodes)
+        {
+            node.neighbours.Clear();
+
+            Collider[] hits = Physics.OverlapSphere(
+                node.transform.position,
+                connectionRadius,
+                nodeMask
+            );
+
+            foreach (Collider c in hits)
+            {
+                Node other = c.GetComponent<Node>();
+
+                if (other == null || other == node)
+                    continue;
+
+                if (IsWalkableConnection(node, other))
+                {
+                    node.neighbours.Add(other);
+                }
+            }
         }
     }
 
@@ -149,5 +155,33 @@ public class MapPoints : MonoBehaviour
         }
 
         return true; //vacio => bloqueado
+    }
+    bool IsWalkableConnection(Node a, Node b)
+    {
+        Vector3 from = a.transform.position + Vector3.up * 0.2f;
+        Vector3 to = b.transform.position + Vector3.up * 0.2f;
+
+        Vector3 dir = to - from;
+        float dist = dir.magnitude;
+
+        return !Physics.Raycast(from, dir.normalized, dist, obstacleMask);
+    }
+    public Node GetClosestNode(Vector3 pos)
+    {
+        Node best = null;
+        float bestDist = float.MaxValue;
+
+        foreach (var n in allNodes)
+        {
+            float d = (n.transform.position - pos).sqrMagnitude;
+
+            if (d < bestDist)
+            {
+                bestDist = d;
+                best = n;
+            }
+        }
+
+        return best;
     }
 }

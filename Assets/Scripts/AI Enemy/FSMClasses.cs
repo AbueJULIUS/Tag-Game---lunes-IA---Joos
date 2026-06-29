@@ -148,7 +148,7 @@ public class PursueState : State
             return;
         }
 
-        Node playerNode = model.FindClosestNode(model.PlayerTransform.position);
+        Node playerNode = EnemyManager.Instance.Map.GetClosestNode(model.PlayerTransform.position);
 
         model.RequestPath(playerNode);
         model.FollowPath();
@@ -213,7 +213,7 @@ public class InvestigateState : State
             return;
         }
 
-        Node targetNode = model.FindClosestNode(manager.LastKnownPlayerPos.Value);
+        Node targetNode = EnemyManager.Instance.Map.GetClosestNode(manager.LastKnownPlayerPos.Value);
 
         model.RequestPath(targetNode);
         model.FollowPath();
